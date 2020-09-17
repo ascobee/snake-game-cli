@@ -14,13 +14,13 @@ LEFT = [0, -1]
 RIGHT = [0, 1]
 
 
-def play_game(active_player="Unknown"):
+def play_game(active_player=None):
     continue_playing = True
     last_move = "D"
     player1 = Player()
     game = Game(player1)
 
-    if active_player != "Unknown":
+    if active_player:
         player1.set_player_name(active_player)
     else:
         player1.validate_player("Name your player: ")
@@ -41,21 +41,19 @@ def play_game(active_player="Unknown"):
         command = timeout_input(
             0.5, "Direction: ", last_move)
 
-        last_move = command
-
-        if command == "Q":
-            quit_program(player_name)
-            continue_playing = False
-            break
-
         new_direction = keyboard_commands(command)
 
-        if new_direction == "INVALID":
+        if new_direction == "QUIT":
+            goodbye_msg(player_name)
+            continue_playing = False
+            break
+        elif not new_direction:
             continue
 
+        last_move = command
+
         game.move_snake(new_direction)
-        if game.snake_eats_apple():
-            player_score = player1.get_player_score()
+        game.snake_eats_apple()
 
         if game.game_over():
             update_screen(game, high_score_name, high_score,
@@ -91,32 +89,19 @@ def play_again(name):
 
         if response == "Y":
             return play_game(name)
-
-        if response == "N":
-            quit_program(name)
-            break
-
-
-def quit_program(name):
-    print(
-        "\nThanks for playing, {}!".format(name),
-        "\nQuitting program...",
-        sep='\n'
-    )
+        elif response == "N":
+            return goodbye_msg(name)
 
 
 def validate_player_input(msg):
     while True:
         try:
             command = input(msg)[0]
+            if command.isalpha():
+                return command.upper()
+
         except IndexError as err:
             continue
-
-        if command.isalpha():
-            command = command.upper()
-            break
-
-    return command
 
 
 def timeout_input(timeout, prompt="", timeout_value=None):
@@ -160,9 +145,10 @@ def keyboard_commands(key_commands):
         "E": UP,
         "D": DOWN,
         "S": LEFT,
-        "F": RIGHT
+        "F": RIGHT,
+        "Q": "QUIT"
     }
-    return switcher.get(key_commands, "INVALID")
+    return switcher.get(key_commands, None)
 
 
 def clear_screen():
@@ -178,6 +164,14 @@ def update_screen(game, high_score_name, high_score, player_name, player_score):
     scoreboard(high_score_name, high_score,
                player_name, player_score)
     game.print_board()
+
+
+def goodbye_msg(name):
+    print(
+        "\nThanks for playing, {}!".format(name),
+        "\nQuitting program...",
+        sep='\n'
+    )
 
 
 if __name__ == "__main__":

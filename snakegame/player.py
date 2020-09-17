@@ -49,11 +49,8 @@ class Player:
         while True:
             try:
                 name = input(msg)
+                if name.isalpha():
+                    return self.set_player_name(name.upper())
+
             except IndexError as err:
                 continue
-
-            if name.isalpha():
-                name = name.upper()
-                break
-
-        self.set_player_name(name)

@@ -58,21 +58,16 @@ class Game:
 
             self.player.add_point()
 
-        return True
-
     def game_over(self):
         head = self.snake.head()
 
-        if 0 in head:
-            return True
-
-        if self.right_border in head:
-            return True
-
-        if self.bottom_border in head:
-            return True
-
         if head in self.snake.body[:-1]:
+            return True
+        elif 0 in head:
+            return True
+        elif self.right_border in head:
+            return True
+        elif self.bottom_border in head:
             return True
 
         return False
