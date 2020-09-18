@@ -1,4 +1,4 @@
-# app.py
+# main.py
 
 
 import select
@@ -7,6 +7,7 @@ from os import name, system
 
 from .game import Game
 from .player import Player
+
 
 UP = [-1, 0]
 DOWN = [1, 0]
@@ -17,26 +18,18 @@ RIGHT = [0, 1]
 def play_game(active_player=None):
     continue_playing = True
     last_move = "D"
-    player1 = Player()
+
+    if not active_player:
+        active_player = validate_player_input("Name your player: ", True)
+
+    player1 = Player(active_player)
+
     game = Game(player1)
-
-    if active_player:
-        player1.set_player_name(active_player)
-    else:
-        player1.validate_player("Name your player: ")
-
-    player_name = player1.get_player_name()
 
     player1.load_high_score()
 
-    high_score_name = player1.get_high_score_name()
-    high_score = player1.get_high_score()
-
     while True:
-        player_score = player1.get_player_score()
-
-        update_screen(game, high_score_name, high_score,
-                      player_name, player_score)
+        update_screen(game, player1)
 
         command = timeout_input(
             0.5, "Direction: ", last_move)
@@ -44,7 +37,7 @@ def play_game(active_player=None):
         new_direction = keyboard_commands(command)
 
         if new_direction == "QUIT":
-            goodbye_msg(player_name)
+            goodbye_msg(player1.player)
             continue_playing = False
             break
         elif not new_direction:
@@ -52,35 +45,20 @@ def play_game(active_player=None):
 
         last_move = command
 
-        game.move_snake(new_direction)
+        game.snake.move(new_direction)
         game.snake_eats_apple()
 
-        if game.game_over():
-            update_screen(game, high_score_name, high_score,
-                          player_name, player_score)
+        if game.is_game_over():
+            update_screen(game, player1)
             print("\nGAME OVER!")
             break
 
-    if player_score > high_score:
-        player1.set_high_score(player_score)
-        player1.set_high_score_name(player_name)
-
-        high_score_name = player1.get_high_score_name()
-        high_score = player1.get_high_score()
-
-        player1.save_high_score()
-
-        update_screen(game, high_score_name, high_score,
-                      player_name, player_score)
-        print(
-            player_name,
-            ", YOU HAVE THE NEW HIGH SCORE! : ",
-            player_score,
-            sep=''
-        )
+    if player1.is_high_score():
+        update_screen(game, player1)
+        print(f"{player1.player}, YOU HAVE THE NEW HIGH SCORE! : {player1.score}")
 
     if continue_playing:
-        return play_again(player_name)
+        return play_again(player1.player)
 
 
 def play_again(name):
@@ -93,10 +71,14 @@ def play_again(name):
             return goodbye_msg(name)
 
 
-def validate_player_input(msg):
+def validate_player_input(msg, is_name=False):
     while True:
         try:
-            command = input(msg)[0]
+            if is_name:
+                command = input(msg)
+            else:
+                command = input(msg)[0]
+
             if command.isalpha():
                 return command.upper()
 
@@ -132,10 +114,10 @@ def menu():
     )
 
 
-def scoreboard(high_score_name, high_score, player_name, player_score):
+def scoreboard(player):
     print(
-        "\nHIGH SCORE ({}): {}".format(high_score_name, high_score),
-        "{}'s SCORE: {}\n".format(player_name, player_score),
+        f"\nHIGH SCORE ({player.high_score_player}): {player.high_score}",
+        f"{player.player}'S SCORE: {player.score}\n",
         sep='\n'
     )
 
@@ -158,20 +140,15 @@ def clear_screen():
         _ = system('clear')
 
 
-def update_screen(game, high_score_name, high_score, player_name, player_score):
+def update_screen(game, player):
     clear_screen()
     menu()
-    scoreboard(high_score_name, high_score,
-               player_name, player_score)
+    scoreboard(player)
     game.print_board()
 
 
 def goodbye_msg(name):
-    print(
-        "\nThanks for playing, {}!".format(name),
-        "\nQuitting program...",
-        sep='\n'
-    )
+    print(f"\nThanks for playing, {name}!\n\nQuitting program...")
 
 
 if __name__ == "__main__":

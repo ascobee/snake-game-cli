@@ -8,8 +8,7 @@ class Snake:
 
     def move(self, direction):
         self.direction = direction
-        head = self.head()
-        head = list(map(sum, zip(head, self.direction)))
+        head = list(map(sum, zip(self.head(), self.direction)))
         self.body = self.body[1:] + [head]
 
     def head(self):
@@ -21,3 +20,7 @@ class Snake:
 
         head = self.head()
         board[head[0]][head[1]] = "X"
+
+    def grow(self):
+        new_tail = self.body[0]
+        self.body.insert(0, new_tail)

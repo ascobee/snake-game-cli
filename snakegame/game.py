@@ -43,22 +43,16 @@ class Game:
         for row in board:
             print(" ".join(map(str, row)))
 
-    def move_snake(self, direction):
-        self.snake.move(direction)
-
     def snake_eats_apple(self):
         head = self.snake.head()
-        apple_position = self.apple.get_apple()
+        apple_position = [self.apple.row, self.apple.col]
 
         if head == apple_position:
-            self.apple.apple_is_set = False
-
-            new_tail = self.snake.body[0]
-            self.snake.body.insert(0, new_tail)
-
+            self.apple.move()
+            self.snake.grow()
             self.player.add_point()
 
-    def game_over(self):
+    def is_game_over(self):
         head = self.snake.head()
 
         if head in self.snake.body[:-1]:
