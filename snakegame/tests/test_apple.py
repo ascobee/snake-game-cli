@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # test_apple.py
 
 import unittest

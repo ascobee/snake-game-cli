@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # __main__.py
 
 from .app import play_game

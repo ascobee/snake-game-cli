@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # game.py
 
 from .apple import Apple

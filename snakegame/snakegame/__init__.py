@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # __init__.py
 
 from .game import Game

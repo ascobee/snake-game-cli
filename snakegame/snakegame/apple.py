@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # apple.py
 
 from random import randint
