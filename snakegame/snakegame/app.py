@@ -37,7 +37,7 @@ def play_game(active_player=None):
         new_direction = keyboard_commands(command)
 
         if new_direction == "QUIT":
-            goodbye_msg(player1.player)
+            goodbye_msg(player1.player_name)
             continue_playing = False
             break
         elif not new_direction:
@@ -55,20 +55,20 @@ def play_game(active_player=None):
 
     if player1.is_high_score():
         update_screen(game, player1)
-        print(f"{player1.player}, YOU HAVE THE NEW HIGH SCORE! : {player1.score}")
+        print(f"{player1.player_name}, YOU HAVE THE NEW HIGH SCORE! : {player1.score}")
 
     if continue_playing:
-        return play_again(player1.player)
+        return play_again(player1.player_name)
 
 
-def play_again(name):
+def play_again(player_name):
     while True:
         response = validate_player_input("Play Again? (Y/N): ")
 
         if response == "Y":
-            return play_game(name)
+            return play_game(player_name)
         elif response == "N":
-            return goodbye_msg(name)
+            return goodbye_msg(player_name)
 
 
 def validate_player_input(msg, is_name=False):
@@ -117,7 +117,7 @@ def menu():
 def scoreboard(player):
     print(
         f"\nHIGH SCORE ({player.high_score_player}): {player.high_score}",
-        f"{player.player}'S SCORE: {player.score}\n",
+        f"{player.player_name}'S SCORE: {player.score}\n",
         sep='\n'
     )
 
@@ -147,8 +147,8 @@ def update_screen(game, player):
     game.print_board()
 
 
-def goodbye_msg(name):
-    print(f"\nThanks for playing, {name}!\n\nQuitting program...")
+def goodbye_msg(player_name):
+    print(f"\nThanks for playing, {player_name}!\n\nQuitting program...")
 
 
 if __name__ == "__main__":

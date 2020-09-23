@@ -59,9 +59,9 @@ class Game:
             return True
         elif 0 in head:
             return True
-        elif self.right_border in head:
+        elif head[1] == self.right_border:
             return True
-        elif self.bottom_border in head:
+        elif head[0] == self.bottom_border:
             return True
 
         return False

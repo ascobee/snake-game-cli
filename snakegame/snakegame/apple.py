@@ -8,8 +8,7 @@ class Apple:
     def __init__(self, height, width):
         self.height = height
         self.width = width
-        self.col = randint(1, self.width - 2)
-        self.row = randint(1, self.height - 2)
+        self.move()
 
     def move(self):
         self.col = randint(1, self.width - 2)
